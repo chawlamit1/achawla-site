@@ -84,7 +84,7 @@ document.querySelectorAll(
 
 /* ==========================================
    METRIC COUNTERS
-========================================== */
+========================================== 
 
 const counters = document.querySelectorAll('.metric h4');
 
@@ -153,7 +153,7 @@ counters.forEach(counter => {
 
     counterObserver.observe(counter);
 
-});
+}); */
 
 /* ==========================================
    CURRENT YEAR FOOTER
