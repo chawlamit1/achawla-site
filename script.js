@@ -1,67 +1,169 @@
-// Mobile Menu
+/* ==========================================
+   SMOOTH SCROLL
+========================================== */
 
-const menuToggle = document.getElementById("menuToggle");
-const navMenu = document.querySelector(".nav-menu");
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
-menuToggle.addEventListener("click", () => {
-    navMenu.classList.toggle("active");
-});
+    anchor.addEventListener('click', function (e) {
 
-// Counter Animation
+        const targetId = this.getAttribute('href');
 
-const counters = document.querySelectorAll("[data-count]");
+        if (targetId === '#') return;
 
-const animateCounter = (counter) => {
+        const target = document.querySelector(targetId);
 
-    const target = Number(counter.dataset.count);
-    let count = 0;
+        if (!target) return;
 
-    const increment = target / 50;
+        e.preventDefault();
 
-    const updateCounter = () => {
+        target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
 
-        count += increment;
-
-        if (count < target) {
-            counter.innerText = Math.floor(count);
-            requestAnimationFrame(updateCounter);
-        } else {
-            counter.innerText = target;
-        }
-    };
-
-    updateCounter();
-};
-
-const observer = new IntersectionObserver((entries) => {
-
-    entries.forEach(entry => {
-
-        if (entry.isIntersecting) {
-
-            animateCounter(entry.target);
-            observer.unobserve(entry.target);
-        }
     });
 
-}, {
-    threshold: 0.5
 });
 
-counters.forEach(counter => {
-    observer.observe(counter);
-});
+/* ==========================================
+   HEADER SHADOW ON SCROLL
+========================================== */
 
-// Header Shadow on Scroll
+const header = document.querySelector('.header');
 
-window.addEventListener("scroll", () => {
-
-    const header = document.querySelector(".header");
+window.addEventListener('scroll', () => {
 
     if (window.scrollY > 50) {
+
         header.style.boxShadow =
-            "0 10px 30px rgba(0,0,0,0.25)";
+            '0 10px 30px rgba(0,0,0,0.25)';
+
     } else {
-        header.style.boxShadow = "none";
+
+        header.style.boxShadow = 'none';
+
     }
+
 });
+
+/* ==========================================
+   FADE-IN ANIMATION
+========================================== */
+
+const observer = new IntersectionObserver(
+
+    entries => {
+
+        entries.forEach(entry => {
+
+            if (entry.isIntersecting) {
+
+                entry.target.classList.add('visible');
+
+            }
+
+        });
+
+    },
+
+    {
+        threshold: 0.15
+    }
+
+);
+
+document.querySelectorAll(
+    '.snapshot-card, .initiatives-card, .impact-card, .passion-card, .linkedin-card'
+).forEach(el => {
+
+    el.classList.add('fade-in');
+
+    observer.observe(el);
+
+});
+
+/* ==========================================
+   METRIC COUNTERS
+========================================== */
+
+const counters = document.querySelectorAll('.metric h4');
+
+const counterObserver = new IntersectionObserver(
+
+    entries => {
+
+        entries.forEach(entry => {
+
+            if (!entry.isIntersecting) return;
+
+            const element = entry.target;
+
+            const text = element.innerText;
+
+            const targetValue = parseInt(
+                text.replace(/\D/g, '')
+            );
+
+            let current = 0;
+
+            const increment =
+                Math.max(1, Math.ceil(targetValue / 60));
+
+            const timer = setInterval(() => {
+
+                current += increment;
+
+                if (current >= targetValue) {
+
+                    current = targetValue;
+
+                    clearInterval(timer);
+
+                }
+
+                if (text.includes('K+')) {
+
+                    element.innerText = current + 'K+';
+
+                } else if (text.includes('+')) {
+
+                    element.innerText = current + '+';
+
+                } else {
+
+                    element.innerText = current;
+
+                }
+
+            }, 20);
+
+            counterObserver.unobserve(element);
+
+        });
+
+    },
+
+    {
+        threshold: 0.4
+    }
+
+);
+
+counters.forEach(counter => {
+
+    counterObserver.observe(counter);
+
+});
+
+/* ==========================================
+   CURRENT YEAR FOOTER
+========================================== */
+
+const footer = document.querySelector('footer');
+
+if (footer) {
+
+    footer.innerHTML =
+        `© ${new Date().getFullYear()} Amit Chawla. All Rights Reserved.`;
+
+}
