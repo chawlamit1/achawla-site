@@ -184,13 +184,13 @@ body {
 }
 
 .profile-image {
-    width: 120px !important;
-    height: 120px !important;
+    width: 220px;
+    height: 280px;
     object-fit: cover;
-    border-radius: 50%;
+    object-position: center top;
+    border-radius: 16px;
     display: block;
     margin: 0 auto 20px;
-}
 
 }
 
